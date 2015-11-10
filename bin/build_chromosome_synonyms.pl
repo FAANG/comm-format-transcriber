@@ -62,180 +62,7 @@ my %insdc;
 my %ucsc;
 my %has_gca;
 my %has_chromosome;
-
-# Lookup of Ensembl full name to UCSC database name
-#
-# Derived from https://genome.ucsc.edu/FAQ/FAQreleases.html#release1
-#
-my $ensembl2ucsc = {
-    # Mammals
-    # Human
-    'homo_sapiens'             => 'hg38',
-    # Alpaca
-    'vicugna_pacos'            => 'vicPac2',
-    #Armadillo
-    'dasypus_novemcinctus'     => 'dasNov3',
-    # Bushbaby
-    'otolemur_garnettii'       => 'otoGar3',
-    # Baboon
-    'papio_anubis'             => 'papAnu2',
-    # Cat
-    'felis_catus'              => 'felCat5',
-    # Chimp
-    'pan_troglodytes'          => 'panTro4',
-    # Cow
-    'bos_taurus'               => 'bosTau8',
-    # Dog
-    'canis_familiaris'         => 'canFam3',
-    # Dolphin
-    'tursiops_truncatus'       => 'turTru2',
-    # Elephant
-    'loxodonta_africana'       => 'loxAfr3',
-    # Ferret
-    'mustela_putorius_furo'    => 'musFur1',
-    # Gibbon
-    'nomascus_leucogenys'      => 'nomLeu3',
-    # Gorilla
-    'gorilla_gorilla'          => 'gorGor3',
-    # Guinea pig
-    'cavia_porcellus'          => 'cavPor3',
-    # Hedgehog
-    'erinaceus_europaeus'      => 'eriEur2',
-    # Horse
-    'equus_caballus'           => 'equCab2',
-    # Kangaroo rat
-    'dipodomys_ordii'          => 'dipOrd1',
-    # Marmoset
-    'callithrix_jacchus'       => 'calJac3',
-    # Megabat
-    'pteropus_vampyrus'        => 'pteVam1',
-    # Microbat
-    'myotis_lucifugus'         => 'myoLuc2',
-    # Mouse
-    'mus_musculus'             => 'mm10',
-    # Mouse lemur
-    'microcebus_murinus'       => 'micMur1',
-    # Opossum
-    'monodelphis_domestica'    => 'monDom5',
-    # Orangutan
-    'pongo_abelii'             => 'ponAbe2',
-    # Panda
-    'ailuropoda_melanoleuca'   => 'ailMel1',
-    # Pig
-    'sus_scrofa'               => 'susScr3',
-    # Pika
-    'ochotona_princeps'        => 'ochPri3',
-    # Platypus
-    'ornithorhynchus_anatinus' => 'ornAna1',
-    # Rabbit
-    'oryctolagus_cuniculus'    => 'oryCun2',
-    # Rat
-    'rattus_norvegicus'        => 'rn6',
-    # Rhesus
-    'macaca_mulatta'           => 'rheMac3',
-    # Rock hyrax
-    'procavia_capensis'        => 'proCap1',
-    # Sheep
-    'ovis_aries'               => 'oviAri3',
-    # Shrew
-    'sorex_araneus'            => 'sorAra2',
-    # Sloth
-    'choloepus_hoffmanni'      => 'choHof1',
-    # Squirrel
-    'ictidomys_tridecemlineatus' => 'speTri2',
-    # Tarsier
-    'tarsius_syrichta'         => 'tarSyr2',
-    # Tasmanian devil
-    'sarcophilus_harrisii'     => 'sarHar1',
-    # Tenrec
-    'echinops_telfairi'        => 'echTel2',
-    # Tree shrew
-    'tupaia_belangeri'         => 'tupBel1',
-    # Wallaby
-    'macropus_eugenii'         => 'macEug2',
- 
-   # Vertebrates
-    # Atlantic cod
-    'gadus_morhua'             => 'gadMor1',
-    # Chicken
-    'gallus_gallus'            => 'galGal4',
-    # Coelacanth
-    'latimeria_chalumnae'      => 'latCha1',
-    # Fugu
-    'takifugu_rubripes'        => 'fr3',
-    # Lamprey
-    'petromyzon_marinus'       => 'petMar2',
-    # green anole lizard
-    'anolis_carolinensis'      => 'anoCar2',
-    # Medaka
-    'oryzias_latipes'          => 'oryLat2',
-    # Nile tilapia
-    'oreochromis_niloticus'    => 'oreNil2',
-    # Stickleback
-    'gasterosteus_aculeatus'   => 'gasAcu1',
-    # Tetraodon
-    'tetraodon_nigroviridis'   => 'tetNig2',
-    # Turkey
-    'meleagris_gallopavo'      => 'melGal1',
-    # xenopus tropicalis
-    'xenopus_tropicalis'       => 'xenTro3',
-    # Zebra finch
-    'taeniopygia_guttata'      => 'taeGut2',
-    # Zebrafish
-    'danio_rerio'              => 'danRer10',
-
-    # Deuterostomes
-    # C. intestinalis
-    'ciona_intestinalis'       => 'ci2',
-    # S. purpuratus
-    'strongylocentrotus_purpuratus' => 'strPur2',
-
-    # Insects
-    # A. mellifera
-    'apis_mellifera'           => 'apiMel2',
-    # A. gambiae
-    'anopheles_gambiae'        => 'anoGam1',
-    # D. ananassae
-    'drosophila_ananassae'     => 'droAna2',
-    # D. erecta
-    'drosophila_erecta'        => 'droEre1',
-    # D. grimshawi
-    'drosophila_grimshawi'     => 'droGri1',
-    # D. melanogaster
-    'drosophila_melanogaster'  => 'dm6',
-    # D. mojavensis
-    'drosophila_mojavensis'    => 'droMoj2',
-    # drosophila persimilis
-    'drosophila_persimilis'    => 'droPer1',
-    # drosophila pseudoobscura
-    'drosophila_pseudoobscura' => 'dp3',
-    # drosophila sechellia
-    'drosophila_sechellia'     => 'droSec1',
-    # drosophila simulans
-    'drosophila_simulans'      => 'droSim1',
-    # drosophila virilis
-    'drosophila_virilis'       => 'droVir2',
-    # drosophila yakuba
-    'drosophila_yakuba'        => 'droYak2',
-
-    # Nematodes
-    # caenorhabditis brenneri
-    'caenorhabditis_brenneri'  => 'caePb2',
-    # caenorhabditis briggsae
-    'caenorhabditis_briggsae'  => 'cb3',
-    # caenorhabditis elegans
-    'caenorhabditis_elegans'   => 'ce10',
-    # caenorhabditis japonica
-    'caenorhabditis_japonica'  => 'caeJap1',
-    # caenorhabditis remanei
-    'caenorhabditis_remanei'   => 'caeRem3',
-    # pristionchus pacificus
-    'pristionchus_pacificus'   => 'priPac1',
- 
-   # Other
-    # Yeast
-    'saccharomyces_cerevisiae' => 'sacCer3',
-};
+my $ensembl2ucsc;
 
 sub get_options {
     my $db_host = 'mysql-ensembl-mirror.ebi.ac.uk';
@@ -400,6 +227,15 @@ sub fetch_meta {
 	$has_gca{$dbadaptor->species()} = 0;
     }
     
+    my @ucsc_mapping = 
+	@{ $meta_adaptor->list_value_by_key('assembly.ucsc_alias') };
+
+    # Grab the UCSC db name if available
+    if(@ucsc_mapping) {
+	$ensembl2ucsc->{ $dbadaptor->species() } = 
+	    shift @ucsc_mapping;
+    }
+
 }
 
 # Go fetch all mappings for INSDC to our chromosome identifier
