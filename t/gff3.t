@@ -29,7 +29,7 @@ use Bio::FormatTranscriber::Parser::GFF3;
 my $parser; my $metadata_lines = 0;
 ok($parser = Bio::FormatTranscriber::Parser::GFF3->open(binpath . '/data/data_with_fasta.gff3'), 'Making GFF3 parser');
 
-my $callback = sub { my $line = shift; $metadata_lines += 1; print $line; };
+my $callback = sub { my $line = shift; $metadata_lines += 1; };
 
 ok($parser->set_metadata_callback($callback), 'Setting read_metadata callback');
 ok($parser->next(), 'Reading a record from the GFF3 file');
