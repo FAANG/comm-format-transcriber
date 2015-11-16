@@ -195,9 +195,9 @@ sub _fetch_config {
 	throw("Unsupported scheme type: " . $parsed_uri->{scheme});
     }
 
-    # Return the file contents if we successfully retreived values
+    # Return the file contents if we successfully retrieved values
     return $contents if defined $contents;
 
-    throw("Unable to retreive contents of config $uri");
+    throw("Unable to retrieve contents of config $uri");
 }
 
