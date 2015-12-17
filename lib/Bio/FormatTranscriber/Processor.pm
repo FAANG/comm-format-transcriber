@@ -67,8 +67,6 @@ sub new {
 
     my $self = {};
 
-    print Dumper @_;
-
     my($config, $filters) =
 	rearrange([qw(CONFIG FILTERS)], @_);    
 
@@ -252,7 +250,6 @@ sub validate_filters {
 
     # Cycle through the filters, check and add to the count of errors we've found
     foreach my $filter (@{$filters}) {
-	print "Checking filter $filter\n";
 	$errors += $self->validate_filter($filter);
     }
 

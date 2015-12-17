@@ -118,11 +118,7 @@ sub  process_record {
 	}
     }
 
-    # Unfortunately we have to write out the records here,
-    # I'd rather decouple things a little more. But because
-    # of how the metadata is processed and being unable to return
-    # that line by line in the GXF type files...
-    print Dumper $record;
+    return $record;
 }
 
 =head2 process_filter

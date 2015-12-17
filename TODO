@@ -1,4 +1,3 @@
-- Writer to write back out munged files
 - Tests
 - Examples
-- Hangle metadata lines in column based formats better
+- Handle metadata lines in column based formats better

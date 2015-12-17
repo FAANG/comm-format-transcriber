@@ -54,6 +54,7 @@ use Bio::EnsEMBL::IO::Writer;
 use Data::Dumper;
 
 use Bio::FormatTranscriber::Config qw/parse_config/;
+use Scalar::Util qw/openhandle/;
 
 my $PARSERS = {FASTA => 'Bio::EnsEMBL::IO::Parser::Fasta',
                      GFF3  => 'Bio::FormatTranscriber::Parser::GFF3',
@@ -61,6 +62,8 @@ my $PARSERS = {FASTA => 'Bio::EnsEMBL::IO::Parser::Fasta',
                      GFF2  => 'Bio::EnsEMBL::IO::Parser::GTF'
 };
 
+my $SERIALIZERS = {Fasta => 'Bio::EnsEMBL::Utils::IO::FASTASerializer'
+};
 
 =head2 new
 
@@ -91,7 +94,6 @@ sub new {
     # Pull and parse the config file, this will
     # throw an exception if the parsing fails
     $self->{config} = parse_config($config);
-    print Dumper $self->{config};
 
     # Initialize the parsers and filters
     $self->{parser} = $PARSERS->{ $self->{format} };
@@ -135,8 +137,17 @@ sub transcribe_file {
     # Create the parser to read the input file
     my $parser;
     {
-#	no strict 'refs';
 	$parser = "$self->{parser}"->open($infile);
+	$self->{parser} = $parser;
+    }
+
+    # Use the handle we've been passed or create the output handle
+    if(openhandle($outfile)) {
+	$self->{out_handle} = $outfile;
+    } else {
+	$self->{outfile} = $outfile;
+	CORE::open($self->{out_handle}, ">$outfile") ||
+	    throw("Error opening output file $outfile: $@");
     }
 
     # So dirty, but because of the way the parsers handle metadata lines
@@ -151,12 +162,12 @@ sub transcribe_file {
     # Because the Fasta parser is mixed case we need to be a little ugly in
     # how we get the format to pass to the writer.
     my $format_str = (split '::', $self->{parser})[-1];
-#    $self->{writer} = Bio::EnsEMBL::IO::Writer->new($format_str, $outfile);
 
     # This will handle looping through GXF and Fasta type files which the
     # parsers can produce objects for.
     while($parser->next()) {
-	$self->{processor}->process_record($parser->create_object);
+	my $rec = $self->{processor}->process_record($parser->create_object);
+	$self->write_record($rec);
     }
 
     # More dirtiness, if we're parsing a GFF3 or similar that can have an
@@ -167,9 +178,69 @@ sub transcribe_file {
 	$parser->can('in_fasta_mode') &&
 	$parser->in_fasta_mode() ) {
 	while($parser->next_sequence()) {
-	    $self->{processor}->process_record($parser->create_object);
+	    my $rec = $self->{processor}->process_record($parser->create_object);
+	    $self->write_record($rec);
 	}
     }
+}
+
+=head2 write_record
+
+    Description: Write out a record, using the serializer in the record
+                 object if available, otherwise the external serializer.
+
+                 We have to be a little messy because of formats like GFF3
+                 that can have both a column based section and a sequence
+                 section.
+
+=cut
+
+sub write_record {
+    my $self = shift;
+    my $record = shift;
+
+    # What's the format of the record being written
+    my $format = (split '::', ref($record))[-1];
+
+    # If the object knows how to turn itself in to it's native format,
+    # let it take care of itself
+    if($record->can('create_record')) {
+	print { $self->{out_handle} } $record->create_record;
+
+    # Otherwise use the external serializer
+    } elsif($SERIALIZERS->{$format}) {
+	my $serializer = $self->get_serializer_by_type($format);
+	$serializer->print_Seq($record);
+    } else {
+	throw("Can't write record of type" . ref($record));
+    }
+}
+
+=head2 get_serializer_by_type
+
+    Description: Get the serializer for the given format, either load it or
+                 return a pre-existing reference
+
+=cut
+
+sub get_serializer_by_type {
+    my $self = shift;
+    my $type = shift;
+
+    # If we don't have an existing serializer
+    unless($self->{serializer}->{$type}) {
+    
+	# Get the module name and create an instance
+	my $serializer = $SERIALIZERS->{$type};
+	eval "use $serializer";
+	if($@) {
+	    throw("Error loading serializer for format $type: $@");
+	}
+	$self->{serializer}->{$type} = "$serializer"->new($self->{out_handle});
+    }
+
+    # Return out loaded instance of the serializer
+    return $self->{serializer}->{$type};
 }
 
 sub get_processor {
