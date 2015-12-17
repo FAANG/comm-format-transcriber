@@ -192,6 +192,21 @@ sub process_field {
 
 }
 
+=head2 process_metadata
+
+    Description: A very generic routine to process metadata lines, just write
+                 them straight out
+
+=cut
+
+sub process_metadata {
+    my $self = shift;
+    my $line = shift;
+    my $handle = shift;
+
+    print $handle $line;
+}
+
 =head2 process_mapping
 
     Description: Process an individual mapping against a field in the

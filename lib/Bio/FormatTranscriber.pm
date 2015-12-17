@@ -152,10 +152,12 @@ sub transcribe_file {
 
     # So dirty, but because of the way the parsers handle metadata lines
     # as one chunk, losing order and context, and the fact we have to make
-    # an object in order to open a file...we sadly need to execution paths
+    # an object in order to open a file...we sadly need the execution paths
     # to reach the stream processing code.
+    # So call the processor's metadata handler giving it the output handle so
+    # it can write the lines out.
     if($parser->can('set_metadata_callback')) {
-	my $callback = sub { my $line = shift; $self->{processor}->process_metadata($line); };
+	my $callback = sub { my $line = shift; $self->{processor}->process_metadata($line, $self->{out_handle}); };
 	$parser->set_metadata_callback($callback);
     }
 
