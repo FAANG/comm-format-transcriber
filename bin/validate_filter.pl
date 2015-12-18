@@ -17,14 +17,23 @@
 
 =head1 NAME
 
-format_transcriber - 
+validate_filter - Validate a filter has valid lookups and callbacks
 
 =head1 SYNOPSIS
 
-validate_filter.pl -options
+validate_filter.pl -c <config_file> -format <format> [-filter <filters...>]
 
 =head1 DESCRIPTION
 
+Load a configuration and attempt to validate if the filters and callbacks are valid.
+
+Once a configuration is loaded and merged, cycle through the rules ensuring the
+requested lookup table exists or the callback is valid. For callbacks the module
+will be loaded and substitution parameters will be evaluated to ensure they're valid.
+
+Optionally a list of filters can be given to only evaluate a subset of the filters.
+
+A report of invalid rules will be returned by the script.
 
 =cut
 

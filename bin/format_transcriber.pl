@@ -17,17 +17,20 @@
 
 =head1 NAME
 
-format_transcriber - 
+format_transcriber - Run a set of filters on a given input file
 
 =head1 SYNOPSIS
 
-format_transcriber.pl -options
+format_transcriber.pl -i <input_file> -o <output_file> -c <config> -format <format> [-filter <filters>]
 
 =head1 DESCRIPTION
 
-=head1 TODO
+For a given input file in a given format, and configuration, execute the set of rules on the input
+file and write them back out to output file.
 
-- if config doesn't have a format type (file://, http://...), add file://
+A configuration file is a JSON chunk which may include other JSON chucks to be merged.
+
+Optionally a list of filters can be given to only evaluate a subset of the filters.
 
 =cut
 
