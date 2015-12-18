@@ -65,7 +65,7 @@ use Hash::Union 'union';
 use base qw/Exporter/;
 our @EXPORT_OK;
 our %EXPORT_TAGS;
-@EXPORT_OK = qw/parse_config/;
+@EXPORT_OK = qw/parse_config dump_config/;
 %EXPORT_TAGS = ( all => [@EXPORT_OK] );
 
 =head2 parse_config()
@@ -82,12 +82,12 @@ our %EXPORT_TAGS;
                Also, items from the include tree are added in
                post-order, so include order matters.
 
-  Argv[1]   :  string
+  Argv[1]    : string
                uri of the config to initially load
 
-  Returntype: HashRef
-  Exceptions: If we're unable to parse a json chunk,
-              if a uri scheme type is unsupported
+  Returntype : HashRef
+  Exceptions : If we're unable to parse a json chunk,
+               if a uri scheme type is unsupported
 
 =cut
 
@@ -100,6 +100,33 @@ sub parse_config {
     my $config = _apply_config($uri);
 
     return $config;
+}
+
+=head2 dump_config
+
+    Description: Takes a configuration object and attempts to produce
+                 the JSON encoding.
+
+    Argv[1]    : ref
+                 configuration structure to encode
+
+    Returntype : string
+    Exceptions : If we're unable to encode the object as json
+
+=cut
+
+sub dump_config {
+    my ($config) = @_;
+
+    my $json_str;
+    eval {
+	$json_str = to_json($config, { ascii => 1, pretty => 1 });
+    };
+    if($@) {
+	throw("Unable to encode config: $@");
+    }
+
+    return $json_str;
 }
 
 =head2 _apply_config()
