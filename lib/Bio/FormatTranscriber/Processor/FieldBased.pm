@@ -67,8 +67,6 @@ use warnings;
 
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 
-use Data::Dumper;
-
 use base qw/Bio::FormatTranscriber::Processor/;
 
 sub new {

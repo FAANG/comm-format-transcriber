@@ -57,8 +57,6 @@ use strict;
 use warnings;
 use Carp;
 
-use Data::Dumper;
-
 use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 

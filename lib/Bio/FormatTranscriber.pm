@@ -51,8 +51,6 @@ use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 use Bio::EnsEMBL::IO::Writer;
 
-use Data::Dumper;
-
 use Bio::FormatTranscriber::Config qw/parse_config/;
 use Scalar::Util qw/openhandle/;
 

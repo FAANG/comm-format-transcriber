@@ -52,7 +52,6 @@ package Bio::FormatTranscriber::Config;
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 use Bio::EnsEMBL::Utils::URI qw(parse_uri);
