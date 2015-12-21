@@ -2,7 +2,7 @@
 requires 'Hash::Union';
 requires 'JSON';
 
-# From ensembl-io
+# From ensembl-test
 requires 'IO::Scalar';
 requires 'Archive::Zip';
 requires 'BSD::Resource';
