@@ -1,5 +1,7 @@
 # Format Transcriber
 
+[![Build Status](https://travis-ci.org/FAANG/faang-format-transcriber.svg?branch=master)](https://travis-ci.org/FAANG/faang-format-transcriber) [![Coverage Status](https://coveralls.io/repos/FAANG/faang-format-transcriber/badge.svg?branch=master&service=github)](https://coveralls.io/github/FAANG/faang-format-transcriber?branch=master)
+
 ## Filter and transcribe files based filters and callbacks
 
 The FormatTranscribe module is designed to allow easy translating of
