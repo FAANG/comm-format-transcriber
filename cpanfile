@@ -3,7 +3,7 @@ requires 'Hash::Union';
 requires 'JSON';
 
 requires 'Archive::Zip';
-requires 'Authen::PAM';
+#requires 'Authen::PAM';
 requires 'BSD::Resource';
 requires 'File::Sync';
 requires 'Test::Fake::HTTPD';
