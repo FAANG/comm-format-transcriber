@@ -31,7 +31,8 @@ my $config = { "input_filter" => { 'source' => 'callback', 'location' => 'chromo
 		   },
 		   'chromosome' => { 'human_map' => { 'X' => 'chrX',
 						      'Y' => 'chrY' }
-		   }
+		   },
+		   'scalarvalue' => 'mysubstitution'
 	       }
 };
 
@@ -42,6 +43,8 @@ my $values = {'FIELD'  => 'source',
 	      'FILTER' => 'input_filter',
 	      'FORMAT' => 'GFF3' };
 
+dies_ok { Bio::FormatTranscriber::Processor->new() } "Dies without a configuration";
+
 my $processor = Bio::FormatTranscriber::Processor->new(-config => $config);
 
 ok($processor, 'Make processor object');
@@ -50,6 +53,7 @@ dies_ok { $processor->process_record() } "Fail in call to process_record of pare
 dies_ok { $processor->process_metadata() } "Fail in call to process_metadata of parent class";
 
 ok($processor->init_callback($config->{mapping}->{callback}, 'default', 'callback'), "Initialize a callback module");
+dies_ok { $processor->load_module( {_module => 'Non::Existent::Module' }) } "Dies loading an invalid module";
 
 is_deeply($processor->eval_parameters(@array_params, $values), ['source', 'GFF3'], 'Testing parameter evaluation for array');
 
@@ -59,6 +63,10 @@ is_deeply($processor->eval_parameters($config->{mapping}->{callback}->{_paramete
 
 is($processor->eval_parameters('{{FORmat}}', $values), 'GFF3', 'Testing parameter evaluation for scalar');
 
-is($processor->validate_filter('input_filter'), 0, "Validating filters");
+is_deeply($processor->eval_parameters({ 'chromosome' => '[[scalarvalue]]'}, $values), { 'chromosome' => 'mysubstitution' }, 'Substitution from config entry');
+
+is($processor->validate_filters('input_filter'), 0, "Validating one filter");
+is_deeply($processor->filters, [qw/input_filter processing output_filter/], "Verify filters");
+is($processor->validate_filters(), 0, "Validating all filters");
 
 done_testing();
