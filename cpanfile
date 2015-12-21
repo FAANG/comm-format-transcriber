@@ -2,13 +2,13 @@
 requires 'Hash::Union';
 requires 'JSON';
 
-requires 'Test::Fake::HTTPD';
-requires 'Test::TCP';
-requires 'Test::FTP::Server';
 requires 'Archive::Zip';
 requires 'Authen::PAM';
 requires 'BSD::Resource';
 requires 'File::Sync';
+requires 'Test::Fake::HTTPD';
+requires 'Test::TCP';
+requires 'Test::FTP::Server';
 
 #Test requirements
 test_requires 'Test::More';
