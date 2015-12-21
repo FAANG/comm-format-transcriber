@@ -20,7 +20,7 @@ use Test::Differences;
 
 use Bio::FormatTranscriber::Processor::FieldBased;
 
-my $config = { "input_filter" => { 'source' => 'callback', 'location' => 'chromosome|human_map' },
+my $config = { "input_filter" => { 'source' => 'callback', 'location' => 'chromosome|human_map', 'strand' => 'chromosome|human_map' },
 	       'mapping' => {
 		   'callback' => {
 		       "_callback" => "run",
@@ -38,7 +38,7 @@ my $fields = [qw/source location seqname attributes/];
 
 # Munge a little to make a temporary object rather than depend on
 # an external package such as ensembl-io
-my $record = {source => 'Ensembl', 'location' => 'X', 'seqname' => 'hypothetical_protein'};
+my $record = {source => 'Ensembl', 'location' => 'X', 'seqname' => 'hypothetical_protein', 'attributes' => { 'ID' => 'ENSG0001701', 'Note' => 'Mythical protein' } };
 $record = bless $record, 'Object';
 *Object::fields = sub {return $fields};
 
@@ -47,11 +47,12 @@ my $processor = Bio::FormatTranscriber::Processor::FieldBased->new(-config => $c
 ok($processor, 'Make processor object');
 
 ok($processor->fields($fields), "Set fields");
+is($processor->fields, $fields, "Check fields were set");
 
 is_deeply($record->fields, $fields, "Fields in temporary object match");
 
 is_deeply($processor->process_record($record), 
-	  {source => '__Ensembl__', 'location' => 'chrX', 'seqname' => 'hypothetical_protein'},
+	  {source => '__Ensembl__', 'location' => 'chrX', 'seqname' => 'hypothetical_protein', 'attributes' => { 'ID' => 'ENSG0001701', 'Note' => 'Mythical protein' } },
 	  "Processing a record");
 
 done_testing();
