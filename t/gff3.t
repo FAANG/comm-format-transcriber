@@ -31,7 +31,11 @@ ok($parser = Bio::FormatTranscriber::Parser::GFF3->open(binpath . '/data/data_wi
 
 my $callback = sub { my $line = shift; $metadata_lines += 1; };
 
+is($parser->set_metadata_callback([]), 0, "Setting a bad metadata callback");
+is($parser->clear_metadata_callback(), 0, "Clear unset metadata callback");
 ok($parser->set_metadata_callback($callback), 'Setting read_metadata callback');
+is($parser->clear_metadata_callback(), 1, "Clear metadata callback");
+ok($parser->set_metadata_callback($callback), 'Re-setting read_metadata callback');
 ok($parser->next(), 'Reading a record from the GFF3 file');
 is($metadata_lines, 7, 'Ensure we found 7 lines of metadata');
 is($parser->get_seqname, 'NC_000001.11', 'Testing get_seqname');

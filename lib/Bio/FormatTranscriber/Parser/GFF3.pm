@@ -93,7 +93,10 @@ sub clear_metadata_callback {
 
     if(defined($self->{read_metadata_callback})) {
 	delete $self->{read_metadata_callback};
+	return 1;
     }
+
+    return 0;
 }
 
 =head2 read_metadata

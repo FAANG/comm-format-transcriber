@@ -24,6 +24,7 @@ BEGIN {
 use Test::More;
 use Test::Differences;
 use Test::Deep;
+use Test::Exception;
 use JSON;
 
 use Bio::EnsEMBL::Test::StaticHTTPD;
@@ -35,7 +36,7 @@ Bio::EnsEMBL::Utils::Net->import('do_GET');
 Bio::EnsEMBL::Utils::Net->import('do_FTP');
 use Net::FTP;
 
-use Bio::FormatTranscriber::Config qw/parse_config/;
+use Bio::FormatTranscriber::Config qw/parse_config dump_config/;
 
 my $fake_httpd = 0;
 eval {
@@ -62,6 +63,11 @@ cmp_deeply($doc, $expected, "Retreived config via straight HTTP");
 # Fetch config via HTTP
 my $http_config = parse_config($httpd->endpoint . '/basic.conf');
 cmp_deeply($expected, $http_config, "Retreived config via parse_config, HTTP");
+
+is(dump_config($http_config), to_json($doc, { ascii => 1, pretty =>1 }), "Test dumping config back to json");
+dies_ok { parse_config("mysql://myconfig") } "Unsupported retrieval scheme";
+dies_ok { parse_config($httpd->endpoint . '/badurl.conf') } "Retrieve from non-existant url";
+dies_ok { parse_config($httpd->endpoint . '/bad.conf') } "Retrieve a malformated json config";
 
 # Set up FTP server
 my $user = 'testuser';
