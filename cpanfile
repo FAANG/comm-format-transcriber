@@ -10,7 +10,7 @@ requires 'Test::Fake::HTTPD';
 requires 'Test::TCP';
 recommends 'Test::FTP::Server';
 
-on 'configure' => sub { suggests 'Authen::PAM' }
+on 'configure' => sub { suggests 'Authen::PAM' };
 
 #Test requirements
 test_requires 'Test::More';
