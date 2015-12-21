@@ -8,7 +8,7 @@ requires 'BSD::Resource';
 requires 'File::Sync';
 requires 'Test::Fake::HTTPD';
 requires 'Test::TCP';
-recommends 'Test::FTP::Server';
+requires 'Test::FTP::Server';
 
 on 'configure' => sub { suggests 'Authen::PAM' };
 
