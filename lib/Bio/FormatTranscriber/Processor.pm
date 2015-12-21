@@ -110,7 +110,7 @@ sub process_metadata {
     my $self = shift;
     my $record = shift;
 
-#    confess("Method process_metadata not implemented. This is really important");
+    confess("Method process_metadata not implemented. This is really important");
 }
 
 sub process_callback {
@@ -215,11 +215,11 @@ sub eval_param {
 	# in our lookup parameter set, substitute it.
 	# Otherwise leave the original value in place. Find all different {{key1}},
 	# {{key2}}, ... in the string in one go.
-	$param =~ s/{{([\w_]+)}}/$values->{uc($1)}?$values->{uc($1)}:$1/eg;
+	$param =~ s/{{([\w_]+)}}/$values->{uc($1)}?$values->{uc($1)}:"{{$1}}"/eg;
     }
 
     if($param =~ /\[\[\w_|\]\]/) {
-	$param =~ s/\[\[([\w_|]+)\]\]/$self->nested_hash($self->{config}->{mapping}, $1)?$self->nested_hash($self->{config}->{mapping}, $1):$1/eg;
+	$param =~ s/\[\[([\w_|]+)\]\]/$self->nested_hash($self->{config}->{mapping}, $1)?$self->nested_hash($self->{config}->{mapping}, $1):"[[$1]]"/eg;
     }
 
     return $param;   

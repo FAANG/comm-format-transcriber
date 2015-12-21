@@ -76,11 +76,14 @@ sub run {
 
     my $value = 'unknown_seq';
     if(ref $params eq 'HASH') {
-	$value = $params->{sequence};
+	$value = $params->{sequence}
+	if($params->{sequence});
     } elsif(ref $params eq 'ARRAY') {
-	$value = shift @$params;
+	$value = shift @$params
+	    if(@$params);
     } else {
-	$value = $params;
+	$value = $params
+	    if($params);
     }
 
     return substr $value, 0, 20;

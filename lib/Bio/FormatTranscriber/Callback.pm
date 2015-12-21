@@ -76,11 +76,13 @@ sub run {
 
     my $value = 'unknown';
     if(ref $params eq 'HASH') {
-	$value = $params->{value};
+	$value = $params->{value}
+	if($params->{value});
     } elsif(ref $params eq 'ARRAY') {
 	$value = shift @$params;
     } else {
-	$value = $params;
+	$value = $params
+	    if($params);
     }
 
     return '__' . $value . '__';
