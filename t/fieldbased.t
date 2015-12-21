@@ -46,6 +46,10 @@ my $processor = Bio::FormatTranscriber::Processor::FieldBased->new(-config => $c
 
 ok($processor, 'Make processor object');
 
+ok($processor->fields($fields), "Set fields");
+
+is_deeply($record->fields, $fields, "Fields in temporary object match");
+
 is_deeply($processor->process_record($record), 
 	  {source => '__Ensembl__', 'location' => 'chrX', 'seqname' => 'hypothetical_protein'},
 	  "Processing a record");

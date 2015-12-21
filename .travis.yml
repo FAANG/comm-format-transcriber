@@ -11,7 +11,7 @@ addons:
     - unzip
 
 env:
-  - COVERALLS=false
+  - COVERALLS=true
 
 before_install:
     - git clone --branch master --depth 1 https://github.com/Ensembl/ensembl-test.git
