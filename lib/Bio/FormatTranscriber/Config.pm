@@ -224,6 +224,8 @@ sub _fetch_config {
     # Return the file contents if we successfully retrieved values
     return $contents if defined $contents;
 
-    throw("Unable to retrieve contents of config $uri");
+    # We never fall through because all the retrieval methods throw
+    # an error if they fail. Throw something here if we ever add a
+    # retrieval method that dies silently.
 }
 

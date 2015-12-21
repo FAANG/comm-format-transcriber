@@ -15,12 +15,6 @@
 use strict;
 use warnings;
 
-BEGIN {
-  use FindBin qw/$Bin/;
-  use lib "$Bin/../lib";
-  sub binpath { return $Bin; }
-}
-
 use Test::More;
 use Test::Differences;
 use Test::Exception;

@@ -66,7 +66,6 @@ cmp_deeply($expected, $http_config, "Retreived config via parse_config, HTTP");
 
 is(dump_config($http_config), to_json($doc, { ascii => 1, pretty =>1 }), "Test dumping config back to json");
 dies_ok { parse_config("mysql://myconfig") } "Unsupported retrieval scheme";
-dies_ok { parse_config($httpd->endpoint . '/badurl.conf') } "Retrieve from non-existant url";
 dies_ok { parse_config($httpd->endpoint . '/bad.conf') } "Retrieve a malformated json config";
 
 # Set up FTP server
@@ -75,7 +74,8 @@ my $pass = 'testpass';
 my $ftpd = Bio::EnsEMBL::Test::FTPD->new($user, $pass, binpath . '/testConfigs');
 
 # Test we have an FTP server
-my $ftp_url = "ftp://$user:$pass\@localhost:" . $ftpd->port . '/basic.conf';
+my $ftp_base = "ftp://$user:$pass\@localhost:" . $ftpd->port;
+my $ftp_url = $ftp_base . '/basic.conf';
 my $ftp = Net::FTP->new('localhost', Port => $ftpd->port);
 ok($ftp, 'Do we have a valid ftp client');
 ok($ftp->login($user, $pass), 'Login to ftp server');
@@ -88,5 +88,7 @@ cmp_deeply($doc, $expected, "Retreived config via FTP");
 # Fetching config from the file system
 ok($doc = parse_config('file:///' . binpath . "/testConfigs/basic.conf"), "Retreive via file:///");
 cmp_deeply($doc, $expected, "Retreived config via file:// is correct");
+
+dies_ok { parse_config($ftp_base . '/nonexistent.conf') } "Retrieve from non-existant uri";
 
 done_testing();
