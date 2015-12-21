@@ -33,16 +33,16 @@ my $callback = sub { my $line = shift; $metadata_lines += 1; };
 
 ok($parser->set_metadata_callback($callback), 'Setting read_metadata callback');
 ok($parser->next(), 'Reading a record from the GFF3 file');
-ok($metadata_lines == 7, 'Ensure we found 7 lines of metadata');
-ok($parser->get_seqname eq 'NC_000001.11', 'Testing get_seqname');
-ok ($parser->get_source eq 'RefSeq', 'Testing get_source');
+is($metadata_lines, 7, 'Ensure we found 7 lines of metadata');
+is($parser->get_seqname, 'NC_000001.11', 'Testing get_seqname');
+is($parser->get_source, '1', 'Testing get_source');
 ok($parser->next(), 'Reading next record from the GFF3 file');
 ok($parser->next(), 'Reading last record from the GFF3 file');
 ok(!$parser->next(), "Should return empty, end of records");
 ok($parser->in_fasta_mode(), "We should be in Fasta mode");
 ok($parser->next_sequence(), "Read the first Fasta sequence");
-ok($parser->getHeader() eq 'HSBGPG Human gene for bone gla protein (BGP)', "Checking fasta header");
-ok(length($parser->getSequence()) == 1231, "Checking the sequence is the correct length");
+is($parser->getHeader(), 'HSBGPG Human gene for bone gla protein (BGP)', "Checking fasta header");
+is(length($parser->getSequence()), 1231, "Checking the sequence is the correct length");
 ok($parser->next_sequence(), "Test jumping to the next record, don't read the sequence");
 ok(!$parser->next_sequence(), "Should return empty, end of sequences");
 

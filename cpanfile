@@ -2,9 +2,9 @@
 requires 'Hash::Union';
 requires 'JSON';
 
+# From ensembl-io
 requires 'IO::Scalar';
 requires 'Archive::Zip';
-#requires 'Authen::PAM';
 requires 'BSD::Resource';
 requires 'File::Sync';
 requires 'Test::Fake::HTTPD';
