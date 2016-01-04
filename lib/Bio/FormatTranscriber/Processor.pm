@@ -34,7 +34,11 @@ Bio::FormatTranscriber::Processor
 
   use Bio::FormatTranscriber::Processor;
 
-  my $processor = Bio::FormatTranscriber::Processor->new($config);
+  my $processor = Bio::FormatTranscriber::Processor->new(-CONFIG => $config);
+  OR
+  my $processor = Bio::FormatTranscriber::Processor->new(-CONFIG => $config, -FILTERS => qw/input_filter processing output_filter/);
+
+  $processor->filters( qw/input_filter processing output_filter/);
 
   $processor->validate_filters();
 
@@ -59,6 +63,15 @@ use Carp;
 
 use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
+
+=head2 new
+
+    Description: Instantiate a new instance of the processor, a configuration
+                 object is require, and an optional list of filters to
+                 process. If no list of filters is given the default set of
+                 input_filter, processing, and output_filter will be used.
+
+=cut
 
 sub new {
     my $class = shift;
@@ -111,6 +124,13 @@ sub process_metadata {
     confess("Method process_metadata not implemented. This is really important");
 }
 
+=head2 process_callback
+
+    Description: Process a callback, doing all the substitutions on the parameter
+                 string then calling the method in the module.
+
+=cut
+
 sub process_callback {
     my $self = shift;
     my $filter = shift;
@@ -135,6 +155,15 @@ sub process_callback {
     return $mapping->{_obj}->$callback($params);
 }
 
+=head2 init_callback
+
+    Description: Initialize a callback module, load the module first if it
+                 hasn't already been loaded, then do any substitutions on the
+                 parameter string before instantiating an instance of the
+                 module.
+
+=cut
+
 sub init_callback {
     my $self = shift;
     my $mapping = shift;
@@ -152,6 +181,13 @@ sub init_callback {
     $mapping->{_obj} = "$mapping->{_module}"->new($init_param);
     
 }
+
+=head2 load_module
+
+    Description: Attempt to load a module if it hasn't already been loaded.
+                 Throw an error if we can't load the module for any reason.
+
+=cut
 
 sub load_module {
     my $self = shift;
