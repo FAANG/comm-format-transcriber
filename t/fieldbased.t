@@ -55,4 +55,6 @@ is_deeply($processor->process_record($record),
 	  {source => '__Ensembl__', 'location' => 'chrX', 'seqname' => 'hypothetical_protein', 'attributes' => { 'ID' => 'ENSG0001701', 'Note' => 'Mythical protein' } },
 	  "Processing a record");
 
+ok($processor->process_metadata("#Metadata line\n", *STDOUT));
+
 done_testing();
