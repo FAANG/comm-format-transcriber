@@ -61,8 +61,8 @@ sub new {
 
     my $self = {};
 
-    print "Recieved init parameters:\n";
-    print Dumper @_;
+    print STDERR "Recieved init parameters:\n";
+    warn Dumper @_;
 
     return bless $self, $class;
 }
@@ -71,8 +71,8 @@ sub run {
     my $self = shift;
     my $params = shift;
 
-    print "Params received:";
-    print Dumper $params;
+    print STDERR "Params received:";
+    warn Dumper $params;
 
     my $value = 'unknown';
     if(ref $params eq 'HASH') {

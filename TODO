@@ -1,3 +1,4 @@
 - Tests
 - Examples
 - Streaming input from http(?)
+- Allow STDOUT at an output file in format_transcriber.pl tool

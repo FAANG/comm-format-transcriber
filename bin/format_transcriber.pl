@@ -21,18 +21,22 @@ format_transcriber - Run a set of filters on a given input file
 
 =head1 SYNOPSIS
 
-format_transcriber.pl -i <input_file> -o <output_file> -c <config> -format <format> [-filter <filters>]
+format_transcriber.pl [-i <input_file>] [-o <output_file>] -c <config> -format <format> [-filter <filters>]
 
 =head1 DESCRIPTION
 
 For a given input file in a given format, and configuration, execute the set of rules on the input
-file and write them back out to output file.
+file and write them back out to output file. If no input and/or output file are specified, use
+STDIN and STDOUT to read and write files to be transcribed.
 
 A configuration file is a JSON chunk which may include other JSON chucks to be merged.
 
 Optionally a list of filters can be given to only evaluate a subset of the filters.
 
 =cut
+
+# Don't buffer the output, stream immediately on write
+$|++;
 
 use strict;
 use warnings;
@@ -50,6 +54,13 @@ get_options();
 
 # Allow both multiple options and comma seaprated lists
 @filters = split(/,/,join(',',@filters));
+
+# If we aren't given input and/or output file, use STDIN/OUT
+$input_file = *STDIN
+    unless($input_file);
+
+$output_file = *STDOUT
+    unless($output_file);
 
 my $ft = Bio::FormatTranscriber->new(-config => $config_file, -format => $format, -filters => \@filters);
 

@@ -61,8 +61,8 @@ use Bio::EnsEMBL::Utils::Exception qw(throw);
 sub new {
     my $class = shift;
 
-    print "Recieved seq init parameters:\n";
-    print Dumper @_;
+    print STDERR "Recieved seq init parameters:\n";
+    warn Dumper @_;
 
     return $class->SUPER::new(@_);
 }
@@ -71,8 +71,8 @@ sub run {
     my $self = shift;
     my $params = shift;
 
-    print "Params received:";
-    print Dumper $params;
+    print STDERR "Params received:";
+    warn Dumper $params;
 
     my $value = 'unknown_seq';
     if(ref $params eq 'HASH') {
