@@ -365,14 +365,14 @@ sub validate_mapping {
 		unless($mapping->{_loaded});
 	};
 	if($@) {
-	    print "\tCallback module " . $mapping->{_module} . " for $mapping_key failed to load\n";
+	    print "*\tCallback module " . $mapping->{_module} . " for $mapping_key failed to load\n";
 	    return 0;
 	}
 
 	# Ensure the callback method requested exists
 	my $callback = $mapping->{_callback};
 	unless("$mapping->{_module}"->can($callback)) {
-	    print "\tCallback module " . $mapping->{_module} . " has no method $callback\n";
+	    print "*\tCallback module " . $mapping->{_module} . " has no method $callback\n";
 	    return 0;
 	}
 
