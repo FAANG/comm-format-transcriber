@@ -15,8 +15,8 @@ processing and output_filter. However the exact filters to apply can be
 specified on the command line.
 
 Within each filter the rules for each field are applied in the order
-defined for that format. Before each filter is applied a 'pre' rule is
-applied and after a 'post' rule is applied. All filters and field based
+defined for that format. Before each filter is applied a '_pre' rule is
+applied and after a '_post' rule is applied. All filters and field based
 rules are optional and will be skipped if not defied in the JSON
 configuration file.
 

@@ -244,7 +244,15 @@ sub eval_param {
     my $param = shift;
     my $values = shift;
 
+    # If there's no parameter string, return
+    return
+	unless($param);
+
     if($param =~ /{{[\w_]+}}/) {
+	# Annoying special case because the record has to be passed by reference
+	$param = $values->{RECORD}
+  	  if($param =~ /{{record}}/i);
+
 	# Find any {{key}} in the string, then if there's an uppercase of {{KEY}}
 	# in our lookup parameter set, substitute it.
 	# Otherwise leave the original value in place. Find all different {{key1}},

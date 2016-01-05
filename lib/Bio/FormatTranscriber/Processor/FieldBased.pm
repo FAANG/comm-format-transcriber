@@ -135,8 +135,7 @@ sub process_filter {
 
     # For all the allowed fields in the record type...
     # plus a pre and post filter if specified
-    foreach my $field ('pre', @{$record->fields}, 'post') {
-
+    foreach my $field ('_pre', @{$record->fields}, '_post') {
 	# If we have a requested mapping for this record in the filter configuration...
 	if(defined($self->{config}->{$filter}->{$field})) {
 
@@ -223,17 +222,14 @@ sub process_mapping {
     my $record = shift;
     my $attr_path = shift || '';
 
-    # If we don't have this field for this record,
-    # skip it
-    unless($record->{$field}) {
-	return;
-    }
-
     # Processing a HASH type mapping, which are simple lookup tables.
     if(ref $mapping eq 'HASH') {
 	# Retrieve the value of the field, going down any needed number of
-	# levels in the structure.
-	my $col_val = $self->nested_hash($record, join('|', $field, $attr_path));
+	# levels in the structure. If we're in a 'pre' or 'post' field type
+	# we shouldn't try to look up the value, there isn't one.
+	my $col_val;
+	$col_val = $self->nested_hash($record, join('|', $field, $attr_path))
+	    if($record->{$field});
 
 	# Process if we have a mapping available for the field
 	my $res;
