@@ -167,7 +167,8 @@ sub transcribe_file {
     # parsers can produce objects for.
     while($parser->next()) {
 	my $rec = $self->{processor}->process_record($parser->create_object);
-	$self->write_record($rec);
+	$self->write_record($rec)
+	    unless($rec->{delete});
     }
 
     # More dirtiness, if we're parsing a GFF3 or similar that can have an
