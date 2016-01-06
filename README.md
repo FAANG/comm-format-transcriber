@@ -189,6 +189,10 @@ Read a GFF3 file and translate some columns:
 
     bin/format_transcriber.pl -format gff3 -c file://examples/base.conf -i t/data/data_with_fasta.gff3 2>/dev/null
 
+Filter records from a GFF3 file that start > 20000bp, are of type gene, and are in a seqname not "X" or "1?":
+
+    bin/format_transcriber.pl -format gff3 -c file://examples/gff3_filter.conf -i your_gff3_file.gff3
+
 Validate a configuration, ensuring callbacks can be loading and mappings exist:
 
     bin/validate_filter.pl -format gff3 -c file://examples/base.conf

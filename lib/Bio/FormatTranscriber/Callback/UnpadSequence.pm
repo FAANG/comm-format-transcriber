@@ -67,11 +67,8 @@ use strict;
 use warnings;
 use Carp;
 
-use Data::Dumper;
-
 use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
-use Bio::EnsEMBL::IO::Object::Fasta;
 
 sub new {
     my $class = shift;

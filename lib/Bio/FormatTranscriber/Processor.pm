@@ -60,6 +60,7 @@ package Bio::FormatTranscriber::Processor;
 use strict;
 use warnings;
 use Carp;
+use Storable 'dclone';
 
 use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
@@ -144,12 +145,13 @@ sub process_callback {
 	$self->init_callback($mapping, $field, $attr_path);
     }
 
-    my $params = $self->eval_parameters($mapping->{_parameters}, {'FIELD' => $field,
-								  'ATTR_PATH' => $attr_path,
-								  'FORMAT' => $self->format,
-								  'VALUE' => $col_value,
-								  'FILTER' => $filter,
-								  'RECORD' => $record } );
+    my $params = dclone $mapping->{_parameters};
+    $params = $self->eval_parameters($params, {'FIELD' => $field,
+					       'ATTR_PATH' => $attr_path,
+					       'FORMAT' => $self->format,
+					       'VALUE' => $col_value,
+					       'FILTER' => $filter,
+					       'RECORD' => $record } );
     my $callback = $mapping->{_callback};
 
     return $mapping->{_obj}->$callback($params);
@@ -174,9 +176,10 @@ sub init_callback {
     $self->load_module($mapping)
 	unless($mapping->{_loaded});
 
-    my $init_param = $self->eval_parameters($mapping->{_init}, {'FIELD' => $field,
-								'ATTR_PATH' => $attr_path,
-								'FORMAT' => $self->format} );
+    my $init_param = dclone $mapping->{_init};
+    $init_param = $self->eval_parameters($init_param, {'FIELD' => $field,
+							  'ATTR_PATH' => $attr_path,
+							  'FORMAT' => $self->format} );
 
     $mapping->{_obj} = "$mapping->{_module}"->new($init_param);
     

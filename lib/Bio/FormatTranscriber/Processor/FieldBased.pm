@@ -112,19 +112,55 @@ sub  process_record {
     # we want to allow deeper processing
     for my $filter (@{$self->filters}) {
 	if(defined($self->{config}->{$filter})) {
-	    $self->process_filter($filter, $record);
+	    $self->prepare_filter($filter, $record);
 	}
     }
 
     return $record;
 }
 
-=head2 process_filter
+=head2 prepare_filter
 
     Description: Process an individual filter, cycling through all
                  fields and nested fields specified for update in
                  the filter's configuration section of the configuration
-                 file.
+                 file. Also run all the fields through the '_all'
+                 rule if it exists.
+
+=cut
+
+sub prepare_filter {
+    my $self = shift;
+    my $filter = shift;
+    my $record = shift;
+
+    # For all the allowed fields in the record type...
+    # plus a pre and post filter if specified
+    foreach my $field ('_pre', @{$record->fields}) {
+	# If we have a requested mapping for this record in the filter configuration...
+	if(defined($self->{config}->{$filter}->{$field})) {
+	    $self->process_filter($filter, $record, $field)
+	}
+
+    }
+
+    if(defined($self->{config}->{$filter}->{'_all'})) {
+	foreach my $field (@{$record->fields}) {
+	    $self->process_filter($filter, $record, $field, '_all');
+	}
+    }
+
+    # And do the post record rule after the '_all' if it exists
+    if(defined($self->{config}->{$filter}->{'_post'})) {
+	    $self->process_filter($filter, $record, '_post')
+    }
+}
+
+=head2 process_filter
+
+    Description: Helper to prepare_filter, allows running a ruleset
+                 on a field, which might not match the same name
+                 as the field.
 
 =cut
 
@@ -132,28 +168,21 @@ sub process_filter {
     my $self = shift;
     my $filter = shift;
     my $record = shift;
+    my $field = shift;
+    my $ruleset = shift || $field;
 
-    # For all the allowed fields in the record type...
-    # plus a pre and post filter if specified
-    foreach my $field ('_pre', @{$record->fields}, '_post') {
-	# If we have a requested mapping for this record in the filter configuration...
-	if(defined($self->{config}->{$filter}->{$field})) {
-
-	    # Special case, if it's a nested hash in the field rules, cycle through
-	    # processing those sub-filters unless it's a hash holding a callback routine
-	    if(ref($self->{config}->{$filter}->{$field}) eq 'HASH') {
-		foreach my $attr (keys %{$self->{config}->{$filter}->{$field}}) {
-		    $self->process_field($filter, $field, $record, $attr);
-		}
-	    } else {
-
-		# Otherwise just process the filter for this field against
-		# the record.
-		$self->process_field($filter, $field, $record);
-	    }
-
+    # Special case, if it's a nested hash in the field rules, cycle through
+    # processing those sub-filters unless it's a hash holding a callback routine
+    if(ref($self->{config}->{$filter}->{$ruleset}) eq 'HASH') {
+	foreach my $attr (keys %{$self->{config}->{$filter}->{$ruleset}}) {
+	    $self->process_field($filter, $field, $record, $ruleset, $attr);
 	}
+    } else {
+	# Otherwise just process the filter for this field against
+	# the record.
+	$self->process_field($filter, $field, $record, $ruleset);
     }
+
 }
 
 =head2 process_field
@@ -167,10 +196,11 @@ sub process_field {
     my $filter = shift;
     my $field = shift;
     my $record = shift;
+    my $ruleset = shift;
     my $attr_path = shift || '';
 
     # Fetch the key for the mapping table we're supposed to grab
-    my $mapping_key = $self->nested_hash($self->{config}->{$filter}, join('|', $field, $attr_path));
+    my $mapping_key = $self->nested_hash($self->{config}->{$filter}, join('|', $ruleset, $attr_path));
     my $mapping;
 
     # Fetch the requested mapping table from the set of mappings
@@ -235,6 +265,16 @@ sub process_mapping {
 	my $res;
 	if( defined($mapping->{'_callback'}) ) {
 	    $res = $self->process_callback($filter, $field, $mapping, $col_val, $record, $attr_path);
+
+	    # Is it a filter type (binary yes or no to remove the record, vs just a mutator
+	    # for the value
+	    if($mapping->{'_filter'}) {
+		# Unless the filter said yes to the record, mark it for removal
+		$record->{delete} = 1
+		    unless($res);
+		# And we're done for this filter
+		return;
+	    }
 	} elsif(defined($mapping->{$col_val})) {
 	    $res = $mapping->{$col_val};
 	}
