@@ -65,6 +65,8 @@ package Bio::FormatTranscriber::Processor::GFF3;
 use strict;
 use warnings;
 
+use Bio::EnsEMBL::IO::Object::GFF3Metadata;
+
 use base qw/Bio::FormatTranscriber::Processor::FieldBased/;
 
 sub new {
@@ -74,6 +76,22 @@ sub new {
     my $self = $class->SUPER::new(@_);
 
     return $self;
+}
+
+=head2 make_metadata
+
+    Description: Make the metadata object for the GFF3 type of file
+
+=cut
+
+sub make_metadata {
+    my $self = shift;
+    my $line = shift;
+
+    my $record = Bio::EnsEMBL::IO::Object::GFF3Metadata->new($line);
+
+    return $record;
+
 }
 
 =head2

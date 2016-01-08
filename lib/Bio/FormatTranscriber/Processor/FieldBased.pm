@@ -64,6 +64,7 @@ package Bio::FormatTranscriber::Processor::FieldBased;
 
 use strict;
 use warnings;
+use Data::Dumper;
 
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 
@@ -115,6 +116,13 @@ sub  process_record {
 	    $self->prepare_filter($filter, $record);
 	}
     }
+
+    # We need a look-back buffer for GFF3 and similar formats,
+    # save current record as the last seen, also the last
+    # written if we haven't been told to delete the record
+    $self->{last_record} = $record;
+    $self->{last_written} = $record
+	unless($record->{delete});
 
     return $record;
 }
@@ -231,7 +239,65 @@ sub process_metadata {
     my $line = shift;
     my $handle = shift;
 
-    print $handle $line;
+    # Turn the record in to an object-ish so it's compatible
+    # with the existing code, cleaner than a lot of cutting and pasting
+    my $record = $self->make_metadata($line);
+
+    # Perhaps this is a little specific, but for metadata records see if we
+    # have a metadata ruleset and it's a hash and it contains a callback
+    # type ruleset. The callbacks will have to be somewhat specialized to
+    # understand how to handle all the various kinds of "metadata" that can
+    # be embedded in a file.
+    for my $filter (@{$self->filters}) {
+
+	if( defined($self->{config}->{$filter}->{'_metadata'}) &&
+	    ref($self->{config}->{$filter}->{'_metadata'}) eq 'HASH' &&
+	    defined($self->{config}->{$filter}->{'_metadata'}->{'_callback'}) ) {
+
+	    # Fetch the ruleset
+	    my $mapping = $self->{config}->{$filter}->{'_metadata'};
+
+	    # Pass the work off to the existing routines
+	    $self->process_mapping($filter, '_metadata', $mapping, $record);
+	}
+    }
+
+    # Remember the last record (this) for the next iteration
+    $self->{last_record} = $record;
+
+    # Unless we've been told to delete it, write out the record and
+    # remember the last record we've written
+    unless($record->{delete}) {
+	# If the record type for metadata can create a line to write out, use that
+	if($record->can('create_record')) {
+	    print $handle $record->create_record();
+
+	# Otherwise we'll assume we're using our simple type of "object"
+	} else {
+	    print $handle $record->{'_metadata'};
+	}
+
+	$self->{last_written} = $record;
+    }
+
+    # We return what we've written out
+    return $record;
+}
+
+=head2 make_metadata 
+
+    Description: Make the metadata "object" to be used in any metadata
+                 callbacks, we need something like this because formats such
+                 as GFF3 have a lot more specialized objects to represent
+                 metadata and will override this function.
+
+=cut
+
+sub make_metadata {
+    my $self = shift;
+    my $line  = shift;
+
+    return bless {'_metadata' => $line}, 'Bio::EnsEMBL::IO::Object::GenericMetadata';
 }
 
 =head2 process_mapping

@@ -91,6 +91,11 @@ sub new {
     # Make the object so we can use the methods
     bless $self, $class;
 
+    # We haven't seen any records yet, for processors that support
+    # look-back buffers (not manditory)
+    $self->{last_record} = undef;
+    $self->{last_written} = undef;
+
     # Set the default filters
     $self->filters($filters ? $filters : [qw/input_filter processing output_filter/]);
 
@@ -151,7 +156,9 @@ sub process_callback {
 					       'FORMAT' => $self->format,
 					       'VALUE' => $col_value,
 					       'FILTER' => $filter,
-					       'RECORD' => $record } );
+					       'RECORD' => $record,
+				               'LAST_RECORD' => $self->{last_record},
+				               'LAST_WRITTEN' => $self->{last_written} } );
     my $callback = $mapping->{_callback};
 
     return $mapping->{_obj}->$callback($params);

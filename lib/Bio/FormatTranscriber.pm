@@ -180,7 +180,8 @@ sub transcribe_file {
 	$parser->in_fasta_mode() ) {
 	while($parser->next_sequence()) {
 	    my $rec = $self->{processor}->process_record($parser->create_object);
-	    $self->write_record($rec);
+	    $self->write_record($rec)
+		unless($rec->{delete});
 	}
     }
 }
