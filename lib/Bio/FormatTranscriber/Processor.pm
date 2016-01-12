@@ -183,7 +183,9 @@ sub init_callback {
     $self->load_module($mapping)
 	unless($mapping->{_loaded});
 
-    my $init_param = dclone $mapping->{_init};
+    my $init_param = undef;
+    $init_param = dclone $mapping->{_init}
+      if($mapping->{_init});
     $init_param = $self->eval_parameters($init_param, {'FIELD' => $field,
 							  'ATTR_PATH' => $attr_path,
 							  'FORMAT' => $self->format} );
@@ -262,6 +264,10 @@ sub eval_param {
 	# Annoying special case because the record has to be passed by reference
 	$param = $values->{RECORD}
   	  if($param =~ /{{record}}/i);
+	$param = $values->{LAST_RECORD}
+	  if($param =~ /{{last_record}}/i);
+	$param = $values->{LAST_WRITTEN}
+	  if($param =~ /{{last_written}}/i);
 
 	# Find any {{key}} in the string, then if there's an uppercase of {{KEY}}
 	# in our lookup parameter set, substitute it.

@@ -250,12 +250,12 @@ sub process_metadata {
     # be embedded in a file.
     for my $filter (@{$self->filters}) {
 
-	if( defined($self->{config}->{$filter}->{'_metadata'}) &&
-	    ref($self->{config}->{$filter}->{'_metadata'}) eq 'HASH' &&
-	    defined($self->{config}->{$filter}->{'_metadata'}->{'_callback'}) ) {
+	if( defined($self->{config}->{$filter}->{'_metadata'}) ) {
+
+	    my $mapping_key = $self->{config}->{$filter}->{'_metadata'};
 
 	    # Fetch the ruleset
-	    my $mapping = $self->{config}->{$filter}->{'_metadata'};
+	    my $mapping = $self->nested_hash($self->{config}->{mapping}, $mapping_key);
 
 	    # Pass the work off to the existing routines
 	    $self->process_mapping($filter, '_metadata', $mapping, $record);
