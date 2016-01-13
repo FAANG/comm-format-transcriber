@@ -276,8 +276,9 @@ sub eval_param {
 	$param =~ s/{{([\w_]+)}}/$values->{uc($1)}?$values->{uc($1)}:"{{$1}}"/eg;
     }
 
-    if($param =~ /\[\[\w_|\]\]/) {
-	$param =~ s/\[\[([\w_|]+)\]\]/$self->nested_hash($self->{config}->{mapping}, $1)?$self->nested_hash($self->{config}->{mapping}, $1):"[[$1]]"/eg;
+    if($param =~ /\[\[([\w_|]+)\]\]/) {
+	print "$1\n";
+	$param = $self->nested_hash($self->{config}->{mapping}, $1);
     }
 
     return $param;   
