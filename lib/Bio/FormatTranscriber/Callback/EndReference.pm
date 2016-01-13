@@ -69,13 +69,7 @@ use Carp;
 use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 
-sub new {
-    my $class = shift;
-
-    my $self = {};
-
-    return bless $self, $class;
-}
+use base qw/Bio::FormatTranscriber::Callback/;
 
 sub run {
     my $self = shift;

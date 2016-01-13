@@ -28,26 +28,24 @@ limitations under the License.
 
 =head1 NAME
 
-Bio::FormatTranscriber::Callback
+Bio::FormatTranscriber::Callback::Echo
 
 =head1 SYNOPSIS
 
-  use Bio::FormatTranscriber::Callback::Sequence;
+  use Bio::FormatTranscriber::Callback::Echo;
 
-  $callback_obj = Bio::FormatTranscriber::Callback::Sequence->new($init_params);
+  $callback_obj = Bio::FormatTranscriber::Callback::Echo->new($init_params);
 
   $callback_obj->run($params);
 
 =head1 DESCRIPTION
 
-A generic callback object meant for testing purposes, for sequence type formats. It
-simply dumps any parameters given to it in the initialization and run call. 
+A generic callback object meant for testing purposes. It simply dumps any parameters given
+to it in the initialization and run call. 
 
 =cut
 
-package Bio::FormatTranscriber::Callback::Sequence;
-
-use base qw/Bio::FormatTranscriber::Callback/;
+package Bio::FormatTranscriber::Callback::Echo;
 
 use strict;
 use warnings;
@@ -61,10 +59,12 @@ use Bio::EnsEMBL::Utils::Exception qw(throw);
 sub new {
     my $class = shift;
 
-    print STDERR "Recieved seq init parameters:\n";
+    my $self = {};
+
+    print STDERR "Recieved init parameters:\n";
     warn Dumper @_;
 
-    return $class->SUPER::new(@_);
+    return bless $self, $class;
 }
 
 sub run {
@@ -74,19 +74,18 @@ sub run {
     print STDERR "Params received:";
     warn Dumper $params;
 
-    my $value = 'unknown_seq';
+    my $value = 'unknown';
     if(ref $params eq 'HASH') {
-	$value = $params->{sequence}
-	if($params->{sequence});
+	$value = $params->{value}
+	if($params->{value});
     } elsif(ref $params eq 'ARRAY') {
-	$value = shift @$params
-	    if(@$params);
+	$value = shift @$params;
     } else {
 	$value = $params
 	    if($params);
     }
 
-    return substr $value, 0, 20;
+    return '__' . $value . '__';
 }
 
 1;

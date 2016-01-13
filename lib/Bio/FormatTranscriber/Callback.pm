@@ -1,6 +1,6 @@
 =head1 LICENSE
 
-Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
+Copyright [1999-2016] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,14 +34,9 @@ Bio::FormatTranscriber::Callback
 
   use Bio::FormatTranscriber::Callback;
 
-  $callback_obj = Bio::FormatTranscriber::Callback->new($init_params);
-
-  $callback_obj->run($params);
-
 =head1 DESCRIPTION
 
-A generic callback object meant for testing purposes. It simply dumps any parameters given
-to it in the initialization and run call. 
+Base callback object to inherit from, shouldn't be directly instantiated.
 
 =cut
 
@@ -51,41 +46,18 @@ use strict;
 use warnings;
 use Carp;
 
-use Data::Dumper;
-
-use Bio::EnsEMBL::Utils::Argument qw(rearrange);
-use Bio::EnsEMBL::Utils::Exception qw(throw);
-
 sub new {
     my $class = shift;
 
     my $self = {};
-
-    print STDERR "Recieved init parameters:\n";
-    warn Dumper @_;
 
     return bless $self, $class;
 }
 
 sub run {
     my $self = shift;
-    my $params = shift;
 
-    print STDERR "Params received:";
-    warn Dumper $params;
-
-    my $value = 'unknown';
-    if(ref $params eq 'HASH') {
-	$value = $params->{value}
-	if($params->{value});
-    } elsif(ref $params eq 'ARRAY') {
-	$value = shift @$params;
-    } else {
-	$value = $params
-	    if($params);
-    }
-
-    return '__' . $value . '__';
+    confess("Placeholder method, you should overload this method");
 }
 
 1;

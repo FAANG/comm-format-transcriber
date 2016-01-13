@@ -1,4 +1,4 @@
-# Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
+# Copyright [1999-2016] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ use warnings;
 use Test::More;
 use Test::Differences;
 
-use Bio::FormatTranscriber::Callback;
+use Bio::FormatTranscriber::Callback::Echo;
 
-my $callback = Bio::FormatTranscriber::Callback->new();
+my $callback = Bio::FormatTranscriber::Callback::Echo->new();
 
 ok($callback, "Callback object created");
 

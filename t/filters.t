@@ -1,4 +1,4 @@
-# Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
+# Copyright [1999-2016] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ my $config = { "input_filter" => { 'location' => 'chromosome|invalid_human_map',
 		   },
 		   'callback2' => {
 		       "_callback" => "fake_method",
-		       "_module" => "Bio::FormatTranscriber::Callback",
+		       "_module" => "Bio::FormatTranscriber::Callback::Echo",
 		       "_init" => ["{{Field}}", "{{Format}}"],
 		       "_parameters" => {"field" => "{{FIELD}}", "value" => "{{Value}}", "filter" => "{{FiLTeR}}"}
 		   }
