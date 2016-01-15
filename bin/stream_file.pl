@@ -17,21 +17,16 @@
 
 =head1 NAME
 
-format_transcriber - Run a set of filters on a given input file
+stream_file - Driver for Bio::FormatTranscriber::FileHandle library, mainly for testing
 
 =head1 SYNOPSIS
 
-format_transcriber.pl [-i <input_file>] [-o <output_file>] -c <config> -format <format> [-filter <filters>]
+stream_file.pl [-i <input_file>] [-o <output_file>]
 
 =head1 DESCRIPTION
 
-For a given input file in a given format, and configuration, execute the set of rules on the input
-file and write them back out to output file. If no input and/or output file are specified, use
-STDIN and STDOUT to read and write files to be transcribed.
-
-A configuration file is a JSON chunk which may include other JSON chucks to be merged.
-
-Optionally a list of filters can be given to only evaluate a subset of the filters.
+Streams a given input file, which can be remotely on an http werver and/or gziped. Spits the file
+to STDOUT or a given output file.
 
 =cut
 
@@ -42,35 +37,32 @@ use strict;
 use warnings;
 use Getopt::Long qw(:config no_ignore_case);
 
-use Bio::FormatTranscriber;
 use Bio::FormatTranscriber::FileHandle;
 
 my $input_file;
 my $output_file;
-my $config_file;
-my $format;
-my @filters;
 
 get_options();
-
-# Allow both multiple options and comma seaprated lists
-@filters = split(/,/,join(',',@filters));
 
 # If we aren't given input and/or output file, use STDIN/OUT
 my $in_fh;
 if($input_file) {
-#$in_fh = $input_file;
     $in_fh = Bio::FormatTranscriber::FileHandle->open($input_file);
 } else {
     $in_fh = *STDIN;
 }
 
-$output_file = *STDOUT
-    unless($output_file);
+my $out_fh;
+if($output_file) {
+    open $out_fh, ">", $output_file or
+        die "Error opening output file $output_file: $!";
+} else {
+    $out_fh = *STDOUT;
+}
 
-my $ft = Bio::FormatTranscriber->new(-config => $config_file, -format => $format, -filters => \@filters);
-
-$ft->transcribe_file($in_fh, $output_file);
+while(<$in_fh>) {
+  print $out_fh $_;
+}
 
 sub get_options {
     my $help;
@@ -78,9 +70,6 @@ sub get_options {
     GetOptions(
 	"input=s"                => \$input_file,
 	"output=s"               => \$output_file,
-	"config=s"               => \$config_file,
-	"format=s"               => \$format,
-	"filters=s"              => \@filters,
 	"help"                   => \$help,
 	);
     

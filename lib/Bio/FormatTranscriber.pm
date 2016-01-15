@@ -138,6 +138,7 @@ sub transcribe_file {
 	$parser = "$self->{parser}"->open($infile);
 	$self->{parser} = $parser;
     }
+	print "existing handle\n";
 
     # Use the handle we've been passed or create the output handle
     if(openhandle($outfile)) {

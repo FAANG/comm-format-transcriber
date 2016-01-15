@@ -1,6 +1,7 @@
 # Module requirements
 requires 'Hash::Union';
 requires 'JSON';
+requires 'PerlIO::gzip';
 
 # From ensembl-test
 requires 'IO::Scalar';
