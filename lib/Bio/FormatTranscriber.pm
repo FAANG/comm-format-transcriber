@@ -94,8 +94,8 @@ sub new {
     $self->{config} = parse_config($config);
 
     # Initialize the parsers and filters
-    $self->{parser} = $PARSERS->{ $self->{format} };
-    eval "use $self->{parser}";
+    $self->{parser_obj} = $PARSERS->{ $self->{format} };
+    eval "use $self->{parser_obj}";
     if($@) {
 	throw("Error loading module for format $format: $@");
     }
@@ -135,10 +135,9 @@ sub transcribe_file {
     # Create the parser to read the input file
     my $parser;
     {
-	$parser = "$self->{parser}"->open($infile);
+	$parser = "$self->{parser_obj}"->open($infile);
 	$self->{parser} = $parser;
     }
-	print "existing handle\n";
 
     # Use the handle we've been passed or create the output handle
     if(openhandle($outfile)) {

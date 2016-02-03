@@ -62,10 +62,7 @@ sub open {
 
     if($filename =~ /gz/i) {
 	$mode .= ':gzip';
-#	$filename .= ' |zcat';
     }
-
-    print "mode: $mode\nfile: $filename\n";
 
     open my $fh, $mode, $filename or
 	die "Error opening file $filename: $!";

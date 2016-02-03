@@ -55,7 +55,7 @@ requested.
 
 =cut
 
-package Bio::FormatTranscriber::Processor::GFF3;
+package Bio::FormatTranscriber::Processor::GTF;
 
 use strict;
 use warnings;

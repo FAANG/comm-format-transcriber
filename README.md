@@ -16,8 +16,11 @@ specified on the command line.
 
 Within each filter the rules for each field are applied in the order
 defined for that format. Before each filter is applied a '_pre' rule is
-applied and after a '_post' rule is applied. All filters and field based
-rules are optional and will be skipped if not defied in the JSON
+applied and after all field based rules are applied a '_post' rule run. 
+In addition, the shortcut '_all' rule can be added in which the associated
+filter will run against each of the fields sequentially, the '_all' macro
+is run after all the named fields rules are applied.  All filters and field
+based rules are optional and will be skipped if not defied in the JSON
 configuration file.
 
 There are two types of rules currently, one is a simple hash based replacement,
