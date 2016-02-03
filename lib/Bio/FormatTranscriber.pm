@@ -56,7 +56,8 @@ use Scalar::Util qw/openhandle/;
 
 my $PARSERS = {FASTA => 'Bio::EnsEMBL::IO::Parser::Fasta',
                      GFF3  => 'Bio::FormatTranscriber::Parser::GFF3',
-                     GTF   => 'Bio::EnsEMBL::IO::Parser::GTF',
+                     GTF   => 'Bio::FormatTranscriber::Parser::GTF',
+#                     GTF   => 'Bio::EnsEMBL::IO::Parser::GTF',
                      GFF2  => 'Bio::EnsEMBL::IO::Parser::GTF'
 };
 

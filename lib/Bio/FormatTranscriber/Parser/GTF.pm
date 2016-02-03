@@ -19,22 +19,22 @@ limitations under the License.
 
 =head1 NAME
 
-Bio::FormatTranscriber::Parser::GFF3 - A line-based parser devoted to GFF3
+Bio::FormatTranscriber::Parser::GTF - A line-based parser devoted to GTF
 
 =cut
 
-package Bio::FormatTranscriber::Parser::GFF3;
+package Bio::FormatTranscriber::Parser::GTF;
 
 use strict;
 use warnings;
 
-use base qw/Bio::EnsEMBL::IO::Parser::GFF3/;
+use base qw/Bio::EnsEMBL::IO::Parser::GTF/;
 
 =head1 SYNOPSIS
 
-  use Bio::FormatTranscriber::Parser::GFF3;
+  use Bio::FormatTranscriber::Parser::GTF;
 
-  my $parser = Bio::FormatTranscriber::Parser::GFF3->open('myfile.gff3');
+  my $parser = Bio::FormatTranscriber::Parser::GTF->open('myfile.gff3');
 
   while(my $rec = $parser->next()) {
     # Do things
@@ -42,7 +42,7 @@ use base qw/Bio::EnsEMBL::IO::Parser::GFF3/;
 
 =head1 DESCRIPTION
 
-Parse a GFF3 file, inherited since the default Bio::EnsEMBL::IO::Parser::GFF3
+Parse a GTF file, inherited since the default Bio::EnsEMBL::IO::Parser::GTF
 doesn't maintain metadata and comment order when parsing.
 
 =head1 DEPENDENCIES

@@ -78,8 +78,6 @@ use strict;
 use warnings;
 use Carp;
 
-use Data::Dumper;
-
 use Bio::EnsEMBL::Utils::Argument qw(rearrange);
 use Bio::EnsEMBL::Utils::Exception qw(throw);
 
@@ -101,7 +99,6 @@ sub run {
     return 1
 	unless($record->{type} eq 'gene');
 
-    print Dumper $record;
     # If we're an Ensembl type GTF that doesn't have a mirroring transcript_id,
     # copy the gene_id over to a new transcript_id
     if( exists($record->{attributes}->{gene_id}) &&
