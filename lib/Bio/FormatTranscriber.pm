@@ -57,8 +57,12 @@ use Scalar::Util qw/openhandle/;
 my $PARSERS = {FASTA => 'Bio::EnsEMBL::IO::Parser::Fasta',
                      GFF3  => 'Bio::FormatTranscriber::Parser::GFF3',
                      GTF   => 'Bio::FormatTranscriber::Parser::GTF',
-#                     GTF   => 'Bio::EnsEMBL::IO::Parser::GTF',
                      GFF2  => 'Bio::EnsEMBL::IO::Parser::GTF'
+};
+
+my $OBJECTS = {FASTA => 'Bio::EnsEMBL::IO::Object::ColumnBasedGeneric',
+               GFF3  => 'Bio::EnsEMBL::IO::Object::ColumnBasedGeneric',
+               GTF   => 'Bio::EnsEMBL::IO::Object::GTF'
 };
 
 my $SERIALIZERS = {Fasta => 'Bio::EnsEMBL::Utils::IO::FASTASerializer'
@@ -81,13 +85,29 @@ sub new {
 
     my $self = {};
 
-    my($config, $format, $filters) =
-	rearrange(['CONFIG', 'FORMAT', 'FILTERS'], @_);
+    my($config, $format, $filters, $output_format) =
+	rearrange(['CONFIG', 'FORMAT', 'FILTERS', 'OUT_FORMAT'], @_);
 
     # Ensure we have a valid format for transcribing
     $self->{format} = uc($format);
     unless( $PARSERS->{ $self->{format} } ) {
 	throw("Format $format is not a valid format");
+    }
+
+    # If we've been asked to convert the format, load the new
+    # object type so we'll write the records in the correct format.
+    # This is highly experimental.
+    $self->{out_format} = uc($output_format);
+    if( $self->{format} ne $self->{out_format} ) {
+	unless( $OBJECTS->{ $self->{out_format} } ) {
+	    throw("Format $output_format is not a valid output format");
+	}
+
+	$self->{output_obj} = $OBJECTS->{ $self->{out_format} };
+	eval "use $self->{output_obj}";
+	if($@) {
+	    throw("Error loading module for output format $output_format: $@" );
+	}
     }
 
     # Pull and parse the config file, this will
@@ -111,7 +131,6 @@ sub new {
 
     $self->{processor}->filters($filters)
 	if(@$filters);
-#    $self->{processor} = "$processor"->new($self->{config});
 
     # Initialize the various filters here
 
@@ -204,6 +223,15 @@ sub write_record {
 
     # What's the format of the record being written
     my $format = (split '::', ref($record))[-1];
+
+    # If we've been asked to do a format conversion, try to
+    # cast the object to the proper type so it knows how to
+    # write itself. This should work for all types derived
+    # from FieldBased, but will likely blow up spectactularly
+    # for any incompatible format conversions.
+    if($self->{output_obj}) {
+	bless $record, $self->{output_obj};
+    }
 
     # If the object knows how to turn itself in to it's native format,
     # let it take care of itself

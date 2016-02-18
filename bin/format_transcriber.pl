@@ -48,6 +48,7 @@ use Bio::FormatTranscriber::FileHandle;
 my $input_file;
 my $output_file;
 my $config_file;
+my $output_format;
 my $format;
 my @filters;
 
@@ -68,7 +69,7 @@ if($input_file) {
 $output_file = *STDOUT
     unless($output_file);
 
-my $ft = Bio::FormatTranscriber->new(-config => $config_file, -format => $format, -filters => \@filters);
+my $ft = Bio::FormatTranscriber->new( -config => $config_file, -format => $format, -filters => \@filters, -out_format => ($output_format ? $output_format : $format) );
 
 $ft->transcribe_file($in_fh, $output_file);
 
@@ -80,6 +81,7 @@ sub get_options {
 	"output=s"               => \$output_file,
 	"config=s"               => \$config_file,
 	"format=s"               => \$format,
+        "write_format=s"         => \$output_format,
 	"filters=s"              => \@filters,
 	"help"                   => \$help,
 	);
