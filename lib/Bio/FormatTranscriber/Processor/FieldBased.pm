@@ -323,9 +323,18 @@ sub process_mapping {
 	# Retrieve the value of the field, going down any needed number of
 	# levels in the structure. If we're in a 'pre' or 'post' field type
 	# we shouldn't try to look up the value, there isn't one.
-	my $col_val;
-	$col_val = $self->nested_hash($record, join('|', $field, $attr_path))
-	    if($record->{$field});
+	# Wrap it in an eval block because we need to fail softly, if the attribute
+	# doesn't exist don't throw an error, that's alright, records can miss
+	# fields.
+	my $col_val = undef;
+	eval {
+	    $col_val = $self->nested_hash($record, join('|', $field, $attr_path))
+		if($record->{$field});
+	};
+	if($@) {
+	    # No element was found, move on to the next mapping
+	    return;
+	}
 
 	# Process if we have a mapping available for the field
 	my $res;
