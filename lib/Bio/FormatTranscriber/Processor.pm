@@ -277,7 +277,6 @@ sub eval_param {
     }
 
     if($param =~ /\[\[([\w_|]+)\]\]/) {
-	print "$1\n";
 	$param = $self->nested_hash($self->{config}->{mapping}, $1);
     }
 
