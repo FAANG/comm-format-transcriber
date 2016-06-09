@@ -39,7 +39,7 @@ Bio::FormatTranscriber::Callback::fasta_header
                                                                        parameter_2 => { hash of substitutions },
                                                                       );
 
-  $callback_obj->run({record => $record});
+  $updated_record = $callback_obj->run({record => $record});
 
 =head1 DESCRIPTION
 
@@ -72,7 +72,7 @@ Mapping entry could look like:
 
 and be called during the _pre or _post field step of a filter, ie.
 
-  "input_filter": { "_pre" : "fasta_header"
+  "input_filter": { "_pre" : "fasta_header" 
 		  },
 
 =cut

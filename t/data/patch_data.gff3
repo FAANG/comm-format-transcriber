@@ -1,0 +1,28 @@
+##gff-version   3
+##sequence-region   CHR_HG126_PATCH 72325441 72740748
+#!genome-build  GRCh38.p5
+#!genome-version GRCh38
+#!genome-date 2013-12
+#!genome-build-accession NCBI:GCA_000001405.20
+CHR_HG126_PATCH	GRCh38	chromosome	72325441	72740748	.	.	.	ID=chromosome:CHR_HG126_PATCH;Alias=HG126_PATCH
+###
+CHR_HG126_PATCH	ensembl	gene	72374621	72447493	.	-	.	ID=gene:ENSG00000281766;Name=RYBP;biotype=protein_coding;description=RING1 and YY1 binding protein [Source:HGNC Symbol%3BAcc:HGNC:10480];gene_id=ENSG00000281766;logic_name=assembly_patch_ensembl;version=1
+CHR_HG126_PATCH	ensembl	transcript	72374621	72447493	.	-	.	ID=transcript:ENST00000628983;Parent=gene:ENSG00000281766;Name=RYBP-201;biotype=protein_coding;tag=basic;transcript_id=ENST00000628983;version=1
+CHR_HG126_PATCH	ensembl	three_prime_UTR	72374621	72378402	.	-	.	Parent=transcript:ENST00000628983
+CHR_HG126_PATCH	ensembl	exon	72374621	72378655	.	-	.	Parent=transcript:ENST00000628983;Name=ENSE00003764699;constitutive=1;ensembl_end_phase=-1;ensembl_phase=2;exon_id=ENSE00003764699;rank=5;version=1
+CHR_HG126_PATCH	ensembl	CDS	72378403	72378655	.	-	1	ID=CDS:ENSP00000486012;Parent=transcript:ENST00000628983;protein_id=ENSP00000486012
+CHR_HG126_PATCH	ensembl	exon	72379058	72379156	.	-	.	Parent=transcript:ENST00000628983;Name=ENSE00003774199;constitutive=1;ensembl_end_phase=2;ensembl_phase=2;exon_id=ENSE00003774199;rank=4;version=1
+CHR_HG126_PATCH	ensembl	CDS	72379058	72379156	.	-	1	ID=CDS:ENSP00000486012;Parent=transcript:ENST00000628983;protein_id=ENSP00000486012
+CHR_HG126_PATCH	ensembl	exon	72379269	72379445	.	-	.	Parent=transcript:ENST00000628983;Name=ENSE00003765281;constitutive=1;ensembl_end_phase=2;ensembl_phase=2;exon_id=ENSE00003765281;rank=3;version=1
+CHR_HG126_PATCH	ensembl	CDS	72379269	72379445	.	-	1	ID=CDS:ENSP00000486012;Parent=transcript:ENST00000628983;protein_id=ENSP00000486012
+CHR_HG126_PATCH	ensembl	exon	72446378	72446503	.	-	.	Parent=transcript:ENST00000628983;Name=ENSE00003772464;constitutive=1;ensembl_end_phase=2;ensembl_phase=2;exon_id=ENSE00003772464;rank=2;version=1
+CHR_HG126_PATCH	ensembl	CDS	72446378	72446503	.	-	1	ID=CDS:ENSP00000486012;Parent=transcript:ENST00000628983;protein_id=ENSP00000486012
+CHR_HG126_PATCH	ensembl	CDS	72447270	72447295	.	-	0	ID=CDS:ENSP00000486012;Parent=transcript:ENST00000628983;protein_id=ENSP00000486012
+CHR_HG126_PATCH	ensembl	exon	72447270	72447493	.	-	.	Parent=transcript:ENST00000628983;Name=ENSE00003760613;constitutive=1;ensembl_end_phase=2;ensembl_phase=-1;exon_id=ENSE00003760613;rank=1;version=1
+CHR_HG126_PATCH	ensembl	five_prime_UTR	72447296	72447493	.	-	.	Parent=transcript:ENST00000628983
+###
+CHR_HG126_PATCH	havana	lincRNA_gene	72505075	72550889	.	-	.	ID=gene:ENSG00000280864;Name=RP11-654C22.2;biotype=lincRNA;gene_id=ENSG00000280864;havana_gene=OTTHUMG00000159191;havana_version=1;logic_name=proj_havana;version=1
+CHR_HG126_PATCH	havana	lincRNA	72505075	72550889	.	-	.	ID=transcript:ENST00000629165;Parent=gene:ENSG00000280864;Name=RP11-654C22.2-001;biotype=lincRNA;havana_transcript=OTTHUMT00000353763;havana_version=1;tag=basic;transcript_id=ENST00000629165;version=1
+CHR_HG126_PATCH	havana	exon	72505075	72505358	.	-	.	Parent=transcript:ENST00000629165;Name=ENSE00003769648;constitutive=1;ensembl_end_phase=-1;ensembl_phase=-1;exon_id=ENSE00003769648;rank=3;version=1
+CHR_HG126_PATCH	havana	exon	72549722	72549841	.	-	.	Parent=transcript:ENST00000629165;Name=ENSE00003773559;constitutive=1;ensembl_end_phase=-1;ensembl_phase=-1;exon_id=ENSE00003773559;rank=2;version=1
+CHR_HG126_PATCH	havana	exon	72550428	72550889	.	-	.	Parent=transcript:ENST00000629165;Name=ENSE00003775139;constitutive=1;ensembl_end_phase=-1;ensembl_phase=-1;exon_id=ENSE00003775139;rank=1;version=1
