@@ -196,6 +196,10 @@ Filter records from a GFF3 file that start > 20000bp, are of type gene, and are 
 
     bin/format_transcriber.pl -format gff3 -c file://examples/gff3_filter.conf -i your_gff3_file.gff3
 
+Filter records from a GFF3 file larger than 70000bp, and all children records to that record:
+
+    bin/format_transcriber.pl -format gff3 -c file://examples/gff3_filter_large.conf -i t/data/patch_data.gff3
+
 Validate a configuration, ensuring callbacks can be loading and mappings exist:
 
     bin/validate_filter.pl -format gff3 -c file://examples/base.conf

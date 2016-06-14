@@ -28,39 +28,42 @@ limitations under the License.
 
 =head1 NAME
 
-Bio::FormatTranscriber::Callback::EndReference
+Bio::FormatTranscriber::Callback::MeTooDelete
 
 =head1 SYNOPSIS
 
-  use Bio::FormatTranscriber::Callback::EndReference;
+  use Bio::FormatTranscriber::Callback::MeTooDelete;
 
-  $callback_obj = Bio::FormatTranscriber::Callback::UnpadSequence->new();
+  $callback_obj = Bio::FormatTranscriber::Callback::MeTooDelete->new();
 
-  $write_rec_bool = $callback_obj->run({record => $record, last_written => $last_written_record});
+  $write_rec_bool = $callback_obj->run({record => $record, last_written => $last_record});
 
 =head1 DESCRIPTION
 
-When filtering lines from a GFF3 file, numerous end forward reference (###) can
-stack up on sequential lines. This filter can be placed in the output_filter to
-clean these references.
+Specifically for GTF/GFF3 files, for each record if the previous record has
+been deleted, delete the current record as well. Do this until an end of
+reference (###) metadata record is found.
+
+This is meant to be used in cojunction with filters such as the MaxLength and EndReference
+filters.
 
 Mapping entry should look like:
 
-    "forward_ref" : {
+    "metoo_delete" : {
       "_callback" : "run",
-      "_module" : "Bio::FormatTranscriber::Callback::EndReference",
-      "_parameters" : {"record" : "{{record}}", "last_written" : "{{last_written}}"},
+      "_module" : "Bio::FormatTranscriber::Callback::MeTooDelete",
+      "_parameters" : {"record" : "{{record}}", "last_record" : "{{last_record}}"},
       "_filter" : 1
     }
 
 and usually should be called during the output_filter, ie.
 
-  "output_filter": { "_metadata" : "forward_ref"
+  "processor": { "_post" : "metoo_delete"
 		  },
 
 =cut
 
-package Bio::FormatTranscriber::Callback::EndReference;
+package Bio::FormatTranscriber::Callback::MeTooDelete;
 
 use strict;
 use warnings;
@@ -75,17 +78,17 @@ sub run {
     my $self = shift;
     my $params = shift;
 
-    unless( exists($params->{last_written}) &&
+    unless( exists($params->{last_record}) &&
 	    exists($params->{record}) ) {
-	throw("We're missing the LAST_WRITTEN or the RECORD for the filter call");
+	throw("We're missing the LAST_RECORD or the RECORD for the filter call");
     }
 
-    # A very simple filter, if we're written a foward reference delimeter (###) last, and we're
-    # about to write another... don't.
-    return !(ref($params->{last_written}) eq 'Bio::EnsEMBL::IO::Object::GFF3Metadata' &&
-	     $params->{last_written}->{type} eq 'fwd-ref-delimeter' &&
-	     ref($params->{record}) eq 'Bio::EnsEMBL::IO::Object::GFF3Metadata' &&
-	     $params->{record}->{type} eq 'fwd-ref-delimeter');
+    # A very simple filter, if both the last record is not a metadata type AND
+    # the last record is set to be deleted, return false (delete record), otherwise
+    # return true (don't delete record)
+    return !(ref($params->{last_record}) ne 'Bio::EnsEMBL::IO::Object::GFF3Metadata' &&
+	    $params->{last_record}->{delete});
+	    
 }
 
 1;
