@@ -52,7 +52,7 @@ get_options();
 # Allow both multiple options and comma seaprated lists
 @filters = split(/,/,join(',',@filters));
 
-my $ft = Bio::FormatTranscriber->new(-config => $config_file, -format => $format, -filters => \@filters);
+my $ft = Bio::FormatTranscriber->new(-config => $config_file, -format => $format, -out_format => $format, -filters => \@filters);
 
 my $processor = $ft->get_processor();
 
