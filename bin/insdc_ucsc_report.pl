@@ -301,7 +301,7 @@ sub run {
 	fetch_meta($dbadaptor);
 	fetch_INSDC($dbadaptor);
 	fetch_UCSC($dbadaptor);
-#	run_on_dba($dbadaptor);
+	run_on_dba($dbadaptor);
     }
 
     # Report what we've found

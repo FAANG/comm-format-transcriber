@@ -48,12 +48,12 @@ my $raw_json = slurp($input_file);
 my $json = from_json($raw_json);
 
 foreach my $species (keys %{$json}) {
-    my $forward_key = $species . "_ensembl_to_ucsc";
-    my $reverse_key = $species . "_ucsc_to_ensembl";
+    my $forward_key = "ensembl_to_ucsc";
+    my $reverse_key = "ucsc_to_ensembl";
 
     for my $chr (keys %{$json->{$species}}) {
-	$output_struct->{mapping}->{chromosome}->{$forward_key}->{$chr} = $json->{$species}->{$chr};
-	$output_struct->{mapping}->{chromosome}->{$reverse_key}->{$json->{$species}->{$chr}} = $chr;
+	$output_struct->{mapping}->{chromosome}->{$species}->{$forward_key}->{$chr} = $json->{$species}->{$chr};
+	$output_struct->{mapping}->{chromosome}->{species}->{$reverse_key}->{$json->{$species}->{$chr}} = $chr;
     }
 }
 
