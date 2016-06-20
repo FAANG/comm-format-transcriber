@@ -41,6 +41,7 @@ $|++;
 use strict;
 use warnings;
 use Getopt::Long qw(:config no_ignore_case);
+use IO::Compress::Gzip;
 
 use Bio::FormatTranscriber;
 use Bio::FormatTranscriber::FileHandle;
@@ -50,6 +51,7 @@ my $output_file;
 my $config_file;
 my $output_format;
 my $format;
+my $gzip; my $GzipError;
 my @filters;
 
 get_options();
@@ -69,9 +71,18 @@ if($input_file) {
 $output_file = *STDOUT
     unless($output_file);
 
+if($gzip) {
+    $output_file = new IO::Compress::Gzip $output_file
+        or die "IO::Compress::Gzip failed: $GzipError\n";
+}
+
 my $ft = Bio::FormatTranscriber->new( -config => $config_file, -format => $format, -filters => \@filters, -out_format => ($output_format ? $output_format : $format) );
 
 $ft->transcribe_file($in_fh, $output_file);
+
+if($gzip) {
+    $output_file->close();
+}
 
 sub get_options {
     my $help;
@@ -82,6 +93,7 @@ sub get_options {
 	"config=s"               => \$config_file,
 	"format=s"               => \$format,
         "write_format=s"         => \$output_format,
+	"gzip"                   => \$gzip,
 	"filters=s"              => \@filters,
 	"help"                   => \$help,
 	);
