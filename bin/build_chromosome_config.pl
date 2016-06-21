@@ -53,7 +53,7 @@ foreach my $species (keys %{$json}) {
 
     for my $chr (keys %{$json->{$species}}) {
 	$output_struct->{mapping}->{chromosome}->{$species}->{$forward_key}->{$chr} = $json->{$species}->{$chr};
-	$output_struct->{mapping}->{chromosome}->{species}->{$reverse_key}->{$json->{$species}->{$chr}} = $chr;
+	$output_struct->{mapping}->{chromosome}->{$species}->{$reverse_key}->{$json->{$species}->{$chr}} = $chr;
     }
 }
 
