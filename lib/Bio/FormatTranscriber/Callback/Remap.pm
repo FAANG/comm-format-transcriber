@@ -87,8 +87,8 @@ sub new {
     my $class = shift;
     my $params = shift;
 
-    unless($params->{locations}) {
-	throw("No filter locations specified, you must specify at least one location");
+    unless($params->{locations} || $params->{any_offset}) {
+	throw("No filter locations or any-offset specified, you must specify at least one location or any-offset");
     }
 
     # We're going to treat all locations as regex
@@ -101,6 +101,12 @@ sub new {
     # Remember the locations that we're remapping and create
     # a place to store the offsets when we find them
     my $self = {'locations' => \@locations, 'offsets' => {} };
+
+    # If we've been told that any non-one offset should be
+    # remapped, remember that for when we encounter metadata records
+    if($params->{any_offset}) {
+	$self->{any_offset} = 1;
+    }
 
     return bless $self, $class;
 }
@@ -133,6 +139,14 @@ sub run {
 
 		$self->{offsets}->{$found_loc} = $record->{value}[1];
 	    }
+	}
+
+	# If we've been told to remap any non-one offset (ie. any region
+	# that doesn't start at 1), and this region starts at a value larger
+	# than 1, remember it for remapping later.
+	if($self->{any_offset} && $record->{value}[1] > 1) {
+	    my $found_loc = $record->{value}[0];
+	    $self->{offsets}->{$found_loc} = $record->{value}[1];
 	}
 
     # We've found a data record
