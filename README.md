@@ -159,9 +159,9 @@ the fields seqname and sequence respectively.
 
 ```
 {
-  "input_filter": { "source": "chromosome|homo_sapiens_ensembl_to_ucsc",
+  "input_filter": { "source": "chromosome|homo_sapiens|ensembl_to_ucsc",
                     "seqname": "callback",
-                    "attributes": {"ID": "chromosome|homo_sapiens_ensembl_to_ucsc"},
+                    "attributes": {"ID": "chromosome|homo_sapiens|ensembl_to_ucsc"},
 		    "sequence": "seq_callback" },
   "include": ["file://examples/chromosome_plus_callbacks.conf"]
 }
